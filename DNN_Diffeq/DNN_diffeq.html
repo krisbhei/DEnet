@@ -1,15 +1,6 @@
 \
 <!DOCTYPE html>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
-<meta name="description" content="Using Deep Neural Networks to solve differential equations">
-
-<title>Using Deep Neural Networks to solve differential equations</title>
-
-
-
-
 
 
 
@@ -106,6 +97,22 @@ td.padding {
 <div class="slides">
 
 
+<div class="reveal">
+
+<!-- Any section element inside the <div class="slides"> container
+     is displayed as a slide -->
+
+<div class="slides">
+
+
+<div class="reveal">
+
+<!-- Any section element inside the <div class="slides"> container
+     is displayed as a slide -->
+
+<div class="slides">
+
+
 
 
 
@@ -124,6 +131,14 @@ MathJax.Hub.Config({
 
 
     
+
+
+
+<section>
+
+
+
+<section>
 
 
 
@@ -156,8 +171,8 @@ MathJax.Hub.Config({
 <h2 id="___sec0">Short about differential equations </h2>
 
 <ul>
-<p><li> Find a function \( g \) based on what we know about its derivatives and boundary conditions</li>
-<p><li> Numerically, we find the output from the function evaluated at a set of values</li>
+<p><p><p><li> Find a function \( g \) based on what we know about its derivatives and boundary conditions</li>
+<p><p><p><li> Numerically, we find the output from the function evaluated at a set of values</li>
 </ul>
 </section>
 
@@ -166,9 +181,9 @@ MathJax.Hub.Config({
 <h2 id="___sec1">What the neural network must find </h2>
 
 <ul>
-<p><li> Propose a trial solution \( g_t \)</li>
-<p><li> The trial solution satisfies the boundary conditions</li>
-<p><li> Use the output from the neural network</li>
+<p><p><p><li> Propose a trial solution \( g_t \)</li>
+<p><p><p><li> The trial solution satisfies the boundary conditions</li>
+<p><p><p><li> Use the output from the neural network</li>
 </ul>
 </section>
 
@@ -177,11 +192,15 @@ MathJax.Hub.Config({
 <h2 id="___sec2">One dimensional Poisson equation </h2>
 
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 \begin{align*}
 -g''(x) &= f(x), \qquad x \in (0,1) \\ \\ 
 \end{align*}
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 
 for a given function \( f(x) \) along with some chosen boundary conditions.
@@ -190,8 +209,8 @@ for a given function \( f(x) \) along with some chosen boundary conditions.
 In this case:
 
 <ul>
-<p><li> \( f(x) = (3x + x^2)\exp(x^2) \)</li>
-<p><li> Boundary conditions: \( g(0) = g(1) = 0 \)</li>
+<p><p><p><li> \( f(x) = (3x + x^2)\exp(x^2) \)</li>
+<p><p><p><li> Boundary conditions: \( g(0) = g(1) = 0 \)</li>
 </ul>
 </section>
 
@@ -200,9 +219,13 @@ In this case:
 <h2 id="___sec3">The trial solution </h2>
 A possible trial solution:
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 g_t(x) = x \cdot (1-x) \cdot N(x,P)
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 
 <p>
@@ -215,9 +238,13 @@ weights and biases for every layer contained in \( P \)
 <p>
 We want to find \( g_t \) such that
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 -g_t''(x) = f(x)
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 
 holds as best as possible!
@@ -229,8 +256,8 @@ holds as best as possible!
 <h2 id="___sec4">Using TensorFlow to solve our Poisson equation </h2>
 
 <ul>
-<p><li> Construction phase</li>
-<p><li> Execution phase</li>
+<p><p><p><li> Construction phase</li>
+<p><p><p><li> Execution phase</li>
 </ul>
 </section>
 
@@ -241,7 +268,7 @@ holds as best as possible!
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">import</span> <span style="color: #00aaaa; text-decoration: underline">tensorflow</span> <span style="color: #0000aa">as</span> <span style="color: #00aaaa; text-decoration: underline">tf</span>
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">import</span> <span style="color: #00aaaa; text-decoration: underline">tensorflow</span> <span style="color: #0000aa">as</span> <span style="color: #00aaaa; text-decoration: underline">tf</span>
 
 tf.set_random_seed(<span style="color: #009999">4155</span>)
 
@@ -264,7 +291,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;dnn&#39;</span>):
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;dnn&#39;</span>):
 
     <span style="color: #aaaaaa; font-style: italic"># Input layer</span>
     previous_layer = x_tf
@@ -289,7 +316,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;cost&#39;</span>):
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;cost&#39;</span>):
     g_trial = x_tf*(<span style="color: #009999">1</span>-x_tf)*dnn_output
     d_g_trial = tf.gradients(g_trial,x_tf)
     d2_g_trial = tf.gradients(d_g_trial,x_tf)
@@ -309,7 +336,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>learning_rate = <span style="color: #009999">0.001</span>
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span>learning_rate = <span style="color: #009999">0.001</span>
 <span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;train&#39;</span>):
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     traning_op = optimizer.minimize(cost)
@@ -323,7 +350,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>g_dnn_tf = <span style="color: #00aaaa">None</span>
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span>g_dnn_tf = <span style="color: #00aaaa">None</span>
 
 init = tf.global_variables_initializer()
 
@@ -348,11 +375,15 @@ init = tf.global_variables_initializer()
 <p>
 An approximation of second derivatives:
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 \begin{align*}
 g''(x_i) \approx \frac{g(x_i + \Delta x) - 2g(x_i) + g(x_i -\Delta x)}{\Delta x^2}
 \end{align*}
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 
 for \( \small i = 1, \dots, N_x - 2 \) and \( \small g(x_0) = g(x_{N_x - 1}) = 0 \).
@@ -360,9 +391,13 @@ for \( \small i = 1, \dots, N_x - 2 \) and \( \small g(x_0) = g(x_{N_x - 1}) = 0
 <p>
 Inserting this into the Poission equation yields the following linear system:
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 \small
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 \begin{aligned}
 \begin{pmatrix}
@@ -391,8 +426,12 @@ f(x_{N_x - 2})
 A\vec{g} &= \vec{f}
 \end{aligned}
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 </section>
 
@@ -403,7 +442,7 @@ $$
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>dx = <span style="color: #009999">1</span>/(Nx - <span style="color: #009999">1</span>)
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span>dx = <span style="color: #009999">1</span>/(Nx - <span style="color: #009999">1</span>)
 
 <span style="color: #aaaaaa; font-style: italic"># Set up the matrix A</span>
 A = np.zeros((Nx-<span style="color: #009999">2</span>,Nx-<span style="color: #009999">2</span>))
@@ -434,18 +473,22 @@ g_res = np.linalg.solve(A,f_vec)
 <p>
 The analytical solution can be found analytically in this case:
 <p>&nbsp;<br>
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 $$
 g(x) = x(1 - x)\exp(x)
 $$
+<p>&nbsp;<br>
+<p>&nbsp;<br>
 <p>&nbsp;<br>
 
 <p>
 Max absolute difference between the analytical solution and
 
 <ul>
-<p><li> solution from finite differences:  0.00266858</li>
-<p><li> solution from neural network (gradient descent) in TensorFlow: 0.000490608</li>
-<p><li> solution from neural network (adam) in TensorFlow: 7.11243e-05</li>
+<p><p><p><li> solution from finite differences:  0.00266858</li>
+<p><p><p><li> solution from neural network (gradient descent) in TensorFlow: 0.000490608</li>
+<p><p><p><li> solution from neural network (adam) in TensorFlow: 7.11243e-05</li>
 </ul>
 </section>
 
@@ -458,7 +501,7 @@ We did:
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.Session() <span style="color: #0000aa">as</span> sess:
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.Session() <span style="color: #0000aa">as</span> sess:
     &lt;train the network&gt;
 
     <span style="color: #aaaaaa; font-style: italic"># Write the graph to TensorBoard</span>
@@ -474,7 +517,7 @@ type
 <p>
 
 <!-- code=text typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>tensorboard --logdir &quot;./output&quot;
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; font-size: 80%; font-size: 80%; line-height: 125%"><span></span>tensorboard --logdir &quot;./output&quot;
 </pre></div>
 <p>
 in your commandline
@@ -489,26 +532,320 @@ in your commandline
 For using DNN to solve for differential equations:
 
 <ul>
-<p><li> <a href="https://arxiv.org/pdf/physics/9705023.pdf" target="_self">Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al</a></li>
-<p><li> <a href="http://cs229.stanford.edu/proj2013/ChiaramonteKiener-SolvingDifferentialEquationsUsingNeuralNetworks.pdf" target="_self">Solving differential equations using neural networks - M. M. Chiaramonte and M. Kiener</a></li>
-<p><li> <a href="https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c" target="_self">Neural networks for solving differential equations - becominghuman.ai</a></li>
+<p><p><p><li> <a href="https://arxiv.org/pdf/physics/9705023.pdf" target="_self">Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al</a></li>
+<p><p><p><li> <a href="http://cs229.stanford.edu/proj2013/ChiaramonteKiener-SolvingDifferentialEquationsUsingNeuralNetworks.pdf" target="_self">Solving differential equations using neural networks - M. M. Chiaramonte and M. Kiener</a></li>
+<p><p><p><li> <a href="https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c" target="_self">Neural networks for solving differential equations - becominghuman.ai</a></li>
 </ul>
 <p>
 
 For using TensorFlow:
 
 <ul>
-<p><li> <a href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf" target="_self">Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron</a></li>
+<p><p><p><li> <a href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf" target="_self">Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron</a></li>
 </ul>
 <p>
 
 For understanding the theory of partial differential equations:
 
 <ul>
-<p><li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a>
+<p><p><p><li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a>
 <!-- doconce format html DNN_diffeq --pygments_html_style=autumn --keep_pygments_html_bg SLIDE_TYPE=reveal SLIDE_THEME=simple -->
 <!-- doconce slides_html DNN_diffeq reveal --html_slide_theme=simple --></li>
 </ul>
+</section>
+
+
+
+</div> <!-- class="slides" -->
+</div> <!-- class="reveal" -->
+
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+    // Display navigation controls in the bottom right corner
+    controls: true,
+
+    // Display progress bar (below the horiz. slider)
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: true,
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    //center: true,
+    center: false,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // default/none/slide/concave/convex/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    //parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    //parallaxBackgroundSize: '' // CSS syntax, e.g. "2100px 900px"
+
+    theme: Reveal.getQueryHash().theme, // available themes are in reveal.js/css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+});
+
+Reveal.initialize({
+    dependencies: [
+        // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+        { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+
+        // Interpret Markdown in <section> elements
+        { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+        // Syntax highlight for <code> elements
+        { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+        // Zoom in and out with Alt+click
+        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Speaker notes
+        { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Remote control your reveal.js presentation using a touch device
+        //{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // MathJax
+        //{ src: 'reveal.js/plugin/math/math.js', async: true }
+    ]
+});
+
+Reveal.initialize({
+
+    // The "normal" size of the presentation, aspect ratio will be preserved
+    // when the presentation is scaled to fit different resolutions. Can be
+    // specified using percentage units.
+    width: 1170,  // original: 960,
+    height: 700,
+
+    // Factor of the display size that should remain empty around the content
+    margin: 0.1,
+
+    // Bounds for smallest/largest possible scale to apply to content
+    minScale: 0.2,
+    maxScale: 1.0
+
+});
+</script>
+
+<!-- begin footer logo
+<div style="position: absolute; bottom: 0px; left: 0; margin-left: 0px">
+<img src="somelogo.png">
+</div>
+     end footer logo -->
+
+
+
+</body>
+</html>
+</section>
+
+
+
+</div> <!-- class="slides" -->
+</div> <!-- class="reveal" -->
+
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+    // Display navigation controls in the bottom right corner
+    controls: true,
+
+    // Display progress bar (below the horiz. slider)
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: true,
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    //center: true,
+    center: false,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // default/none/slide/concave/convex/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    //parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    //parallaxBackgroundSize: '' // CSS syntax, e.g. "2100px 900px"
+
+    theme: Reveal.getQueryHash().theme, // available themes are in reveal.js/css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+});
+
+Reveal.initialize({
+    dependencies: [
+        // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+        { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+
+        // Interpret Markdown in <section> elements
+        { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+        // Syntax highlight for <code> elements
+        { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+        // Zoom in and out with Alt+click
+        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Speaker notes
+        { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Remote control your reveal.js presentation using a touch device
+        //{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // MathJax
+        //{ src: 'reveal.js/plugin/math/math.js', async: true }
+    ]
+});
+
+Reveal.initialize({
+
+    // The "normal" size of the presentation, aspect ratio will be preserved
+    // when the presentation is scaled to fit different resolutions. Can be
+    // specified using percentage units.
+    width: 1170,  // original: 960,
+    height: 700,
+
+    // Factor of the display size that should remain empty around the content
+    margin: 0.1,
+
+    // Bounds for smallest/largest possible scale to apply to content
+    minScale: 0.2,
+    maxScale: 1.0
+
+});
+</script>
+
+<!-- begin footer logo
+<div style="position: absolute; bottom: 0px; left: 0; margin-left: 0px">
+<img src="somelogo.png">
+</div>
+     end footer logo -->
+
+
+
+</body>
+</html>
 </section>
 
 
