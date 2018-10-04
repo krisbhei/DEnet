@@ -1,0 +1,542 @@
+<!--
+Automatically generated HTML file from DocOnce source
+(https://github.com/hplgit/doconce/)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="Using Deep Neural Networks to solve differential equations">
+
+<title>Using Deep Neural Networks to solve differential equations</title>
+
+<!-- Bootstrap style: bootswatch_yeti -->
+<link href="https://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
+<!-- not necessary
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+-->
+
+<style type="text/css">
+/* Let inline verbatim have the same color as the surroundings */
+code { color: inherit; background-color: transparent; }
+
+/* Add scrollbar to dropdown menus in bootstrap navigation bar */
+.dropdown-menu {
+   height: auto;
+   max-height: 400px;
+   overflow-x: hidden;
+}
+
+/* Adds an invisible element before each target to offset for the navigation
+   bar */
+.anchor::before {
+  content:"";
+  display:block;
+  height:45px;      /* fixed header height for style bootswatch_yeti */
+  margin:-45px 0 0; /* negative fixed header height */
+}
+
+body { font-size:16px; }
+</style>
+
+
+</head>
+
+<!-- tocinfo
+{'highest level': 2,
+ 'sections': [('Short about differential equations', 2, None, '___sec0'),
+              ('What the neural network must find', 2, None, '___sec1'),
+              ('One dimensional Poisson equation', 2, None, '___sec2'),
+              ('The trial solution', 2, None, '___sec3'),
+              ('Using TensorFlow to solve our Poisson equation',
+               2,
+               None,
+               '___sec4'),
+              ('Construction phase - set everything up', 2, None, '___sec5'),
+              ('Construction phase - construct the network',
+               2,
+               None,
+               '___sec6'),
+              ('Construction phase - define the cost function',
+               2,
+               None,
+               '___sec7'),
+              ('Construction phase - specify the optimization method',
+               2,
+               None,
+               '___sec8'),
+              ('Execution phase - train the network and evaluate the final '
+               'model',
+               2,
+               None,
+               '___sec9'),
+              ('Solving the equation using finite differences',
+               2,
+               None,
+               '___sec10'),
+              ('Code', 2, None, '___sec11'),
+              ('Results: Neural network versus finite differences',
+               2,
+               None,
+               '___sec12'),
+              ('View the constructed graph in TensorBoard',
+               2,
+               None,
+               '___sec13'),
+              ('References', 2, None, '___sec14')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "AMS"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+    
+<!-- Bootstrap navigation bar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="DNN_diffeq_html">Using Deep Neural Networks to solve differential equations</a>
+  </div>
+
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+     <!-- navigation toc: --> <li><a href="#___sec0" style="font-size: 14px; padding: 4px 15px;">Short about differential equations</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec1" style="font-size: 14px; padding: 4px 15px;">What the neural network must find</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec2" style="font-size: 14px; padding: 4px 15px;">One dimensional Poisson equation</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec3" style="font-size: 14px; padding: 4px 15px;">The trial solution</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec4" style="font-size: 14px; padding: 4px 15px;">Using TensorFlow to solve our Poisson equation</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec5" style="font-size: 14px; padding: 4px 15px;">Construction phase - set everything up</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec6" style="font-size: 14px; padding: 4px 15px;">Construction phase - construct the network</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec7" style="font-size: 14px; padding: 4px 15px;">Construction phase - define the cost function</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec8" style="font-size: 14px; padding: 4px 15px;">Construction phase - specify the optimization method</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec9" style="font-size: 14px; padding: 4px 15px;">Execution phase - train the network and evaluate the final model</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec10" style="font-size: 14px; padding: 4px 15px;">Solving the equation using finite differences</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec11" style="font-size: 14px; padding: 4px 15px;">Code</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec12" style="font-size: 14px; padding: 4px 15px;">Results: Neural network versus finite differences</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec13" style="font-size: 14px; padding: 4px 15px;">View the constructed graph in TensorBoard</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec14" style="font-size: 14px; padding: 4px 15px;">References</a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</div> <!-- end of navigation bar -->
+
+<div class="container">
+
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
+
+<!-- ------------------- main content ---------------------- -->
+
+<p>
+
+
+<div class="jumbotron">
+<center><h1>Using Deep Neural Networks to solve differential equations</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Kristine B. Hein -->
+
+<center>
+<b>Kristine B. Hein</b> 
+</center>
+
+<p>
+<!-- institution(s) -->
+
+<br>
+<p>
+<center><h4>Oct 4, 2018</h4></center> <!-- date -->
+<br>
+<p>
+<!-- potential-jumbotron-button -->
+</div> <!-- end jumbotron -->
+
+<!-- !split -->
+
+<h2 id="___sec0" class="anchor">Short about differential equations </h2>
+
+<ul>
+<li> Find a function \( g \) based on what we know about its derivatives and boundary conditions</li>
+<li> Numerically, we find the output from the function evaluated at a set of values</li>
+</ul>
+
+<!-- !split -->
+
+<h2 id="___sec1" class="anchor">What the neural network must find </h2>
+
+<ul>
+<li> Propose a trial solution \( g_t \)</li>
+<li> The trial solution satisfies the boundary conditions</li>
+<li> Use the output from the neural network</li>
+</ul>
+
+<!-- !split -->
+
+<h2 id="___sec2" class="anchor">One dimensional Poisson equation </h2>
+
+$$
+\begin{align*}
+-g''(x) &= f(x), \qquad x \in (0,1) \\ \\
+\end{align*}
+$$
+
+for a given function \( f(x) \) along with some chosen boundary conditions.
+
+<p>
+In this case:
+
+<ul>
+<li> \( f(x) = (3x + x^2)\exp(x^2) \)</li>
+<li> Boundary conditions: \( g(0) = g(1) = 0 \)</li>
+</ul>
+
+<!-- !split -->
+
+<h2 id="___sec3" class="anchor">The trial solution </h2>
+A possible trial solution:
+$$
+g_t(x) = x \cdot (1-x) \cdot N(x,P)
+$$
+
+<p>
+with \( N(x,P) \) being the output from the network at \( x \) with
+weights and biases for every layer contained in \( P \)
+
+<p>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+  <h3 class="panel-title">What we want</h3>
+  </div>
+<div class="panel-body">
+<p> <!-- subsequent paragraphs come in larger fonts, so start with a paragraph -->
+We want to find \( g_t \) such that
+$$
+-g_t''(x) = f(x)
+$$
+
+holds as best as possible!
+</div>
+</div>
+
+
+<p>
+<!-- !split -->
+
+<h2 id="___sec4" class="anchor">Using TensorFlow to solve our Poisson equation </h2>
+
+<ul>
+<li> Construction phase</li>
+<li> Execution phase</li>
+</ul>
+
+<!-- !split -->
+
+<h2 id="___sec5" class="anchor">Construction phase - set everything up </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">tensorflow</span> <span style="color: #007020; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">tf</span>
+
+tf<span style="color: #666666">.</span>set_random_seed(<span style="color: #40a070">4155</span>)
+
+Nx <span style="color: #666666">=</span> <span style="color: #40a070">10</span>
+x <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linspace(<span style="color: #40a070">0</span>,<span style="color: #40a070">1</span>, Nx)
+
+x_tf <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>convert_to_tensor(x<span style="color: #666666">.</span>reshape(<span style="color: #666666">-</span><span style="color: #40a070">1</span>,<span style="color: #40a070">1</span>),dtype<span style="color: #666666">=</span>tf<span style="color: #666666">.</span>float64)
+
+num_iter <span style="color: #666666">=</span> <span style="color: #40a070">10000</span>
+
+num_hidden_neurons <span style="color: #666666">=</span> [<span style="color: #40a070">20</span>,<span style="color: #40a070">10</span>]
+num_hidden_layers <span style="color: #666666">=</span> np<span style="color: #666666">.</span>size(num_hidden_neurons)
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec6" class="anchor">Construction phase - construct the network </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">with</span> tf<span style="color: #666666">.</span>name_scope(<span style="color: #4070a0">&#39;dnn&#39;</span>):
+
+    <span style="color: #60a0b0; font-style: italic"># Input layer</span>
+    previous_layer <span style="color: #666666">=</span> x_tf
+
+    <span style="color: #60a0b0; font-style: italic"># Hidden layers</span>
+    <span style="color: #007020; font-weight: bold">for</span> l <span style="color: #007020; font-weight: bold">in</span> <span style="color: #007020">range</span>(num_hidden_layers):
+        current_layer <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>layers<span style="color: #666666">.</span>dense(previous_layer, \
+                                        num_hidden_neurons[l], \
+                                        name<span style="color: #666666">=</span><span style="color: #4070a0">&#39;hidden</span><span style="color: #70a0d0; font-style: italic">%d</span><span style="color: #4070a0">&#39;</span><span style="color: #666666">%</span>(l<span style="color: #666666">+</span><span style="color: #40a070">1</span>), \
+                                        activation<span style="color: #666666">=</span>tf<span style="color: #666666">.</span>nn<span style="color: #666666">.</span>sigmoid)
+        previous_layer <span style="color: #666666">=</span> current_layer
+
+    <span style="color: #60a0b0; font-style: italic"># Output layer</span>
+    dnn_output <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>layers<span style="color: #666666">.</span>dense(previous_layer, <span style="color: #40a070">1</span>, name<span style="color: #666666">=</span><span style="color: #4070a0">&#39;output&#39;</span>)
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec7" class="anchor">Construction phase - define the cost function </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">with</span> tf<span style="color: #666666">.</span>name_scope(<span style="color: #4070a0">&#39;cost&#39;</span>):
+    g_trial <span style="color: #666666">=</span> x_tf<span style="color: #666666">*</span>(<span style="color: #40a070">1</span><span style="color: #666666">-</span>x_tf)<span style="color: #666666">*</span>dnn_output
+    d_g_trial <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>gradients(g_trial,x_tf)
+    d2_g_trial <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>gradients(d_g_trial,x_tf)
+
+    <span style="color: #60a0b0; font-style: italic"># f(x)</span>
+    right_side <span style="color: #666666">=</span> (<span style="color: #40a070">3</span><span style="color: #666666">*</span>x_tf <span style="color: #666666">+</span> x_tf<span style="color: #666666">**</span><span style="color: #40a070">2</span>)<span style="color: #666666">*</span>tf<span style="color: #666666">.</span>exp(x_tf)
+
+    err <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>square( <span style="color: #666666">-</span>d2_g_trial[<span style="color: #40a070">0</span>] <span style="color: #666666">-</span> right_side)
+    cost <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>reduce_sum(err, name <span style="color: #666666">=</span> <span style="color: #4070a0">&#39;cost&#39;</span>)
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec8" class="anchor">Construction phase - specify the optimization method </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span>learning_rate <span style="color: #666666">=</span> <span style="color: #40a070">0.001</span>
+<span style="color: #007020; font-weight: bold">with</span> tf<span style="color: #666666">.</span>name_scope(<span style="color: #4070a0">&#39;train&#39;</span>):
+    optimizer <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>train<span style="color: #666666">.</span>GradientDescentOptimizer(learning_rate)
+    traning_op <span style="color: #666666">=</span> optimizer<span style="color: #666666">.</span>minimize(cost)
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec9" class="anchor">Execution phase - train the network and evaluate the final model </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span>g_dnn_tf <span style="color: #666666">=</span> <span style="color: #007020">None</span>
+
+init <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>global_variables_initializer()
+
+<span style="color: #007020; font-weight: bold">with</span> tf<span style="color: #666666">.</span>Session() <span style="color: #007020; font-weight: bold">as</span> sess:
+    init<span style="color: #666666">.</span>run()
+
+    <span style="color: #007020; font-weight: bold">for</span> i <span style="color: #007020; font-weight: bold">in</span> <span style="color: #007020">range</span>(num_iter):
+        sess<span style="color: #666666">.</span>run(traning_op)
+
+    g_dnn_tf <span style="color: #666666">=</span> g_trial<span style="color: #666666">.</span>eval()
+
+    <span style="color: #60a0b0; font-style: italic"># Write the graph to TensorBoard</span>
+    writer <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>summary<span style="color: #666666">.</span>FileWriter(<span style="color: #4070a0">&quot;./output&quot;</span>, sess<span style="color: #666666">.</span>graph)
+    writer<span style="color: #666666">.</span>close()
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec10" class="anchor">Solving the equation using finite differences </h2>
+
+<p>
+An approximation of second derivatives:
+$$
+\begin{align*}
+g''(x_i) \approx \frac{g(x_i + \Delta x) - 2g(x_i) + g(x_i -\Delta x)}{\Delta x^2}
+\end{align*}
+$$
+
+for \( \small i = 1, \dots, N_x - 2 \) and \( \small g(x_0) = g(x_{N_x - 1}) = 0 \).
+
+<p>
+Inserting this into the Poission equation yields the following linear system:
+$$
+\small
+$$
+\begin{aligned}
+\begin{pmatrix}
+2 & -1 & 0 & \dots & 0 \\
+-1 & 2 & -1 & \dots & 0 \\
+\vdots & & \ddots & & \vdots \\
+0 & \dots & -1 & 2 & -1  \\
+0 & \dots & 0 & -1 & 2\\
+\end{pmatrix}
+\begin{pmatrix}
+g(x_1) \\
+g(x_2) \\
+\vdots \\
+g(x_{N_x - 3}) \\
+g(x_{N_x - 2})
+\end{pmatrix}
+&=
+\Delta x^2
+\begin{pmatrix}
+f(x_1) \\
+f(x_2) \\
+\vdots \\
+f(x_{N_x - 3}) \\
+f(x_{N_x - 2})
+\end{pmatrix} \\
+A\vec{g} &= \vec{f}
+\end{aligned}
+$$
+$$
+
+<p>
+<!-- !split -->
+
+<h2 id="___sec11" class="anchor">Code </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span>dx <span style="color: #666666">=</span> <span style="color: #40a070">1</span><span style="color: #666666">/</span>(Nx <span style="color: #666666">-</span> <span style="color: #40a070">1</span>)
+
+<span style="color: #60a0b0; font-style: italic"># Set up the matrix A</span>
+A <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((Nx<span style="color: #666666">-</span><span style="color: #40a070">2</span>,Nx<span style="color: #666666">-</span><span style="color: #40a070">2</span>))
+
+A[<span style="color: #40a070">0</span>,<span style="color: #40a070">0</span>] <span style="color: #666666">=</span> <span style="color: #40a070">2</span>
+A[<span style="color: #40a070">0</span>,<span style="color: #40a070">1</span>] <span style="color: #666666">=</span> <span style="color: #666666">-</span><span style="color: #40a070">1</span>
+
+<span style="color: #007020; font-weight: bold">for</span> i <span style="color: #007020; font-weight: bold">in</span> <span style="color: #007020">range</span>(<span style="color: #40a070">1</span>,Nx<span style="color: #666666">-</span><span style="color: #40a070">3</span>):
+    A[i,i<span style="color: #666666">-</span><span style="color: #40a070">1</span>] <span style="color: #666666">=</span> <span style="color: #666666">-</span><span style="color: #40a070">1</span>
+    A[i,i] <span style="color: #666666">=</span> <span style="color: #40a070">2</span>
+    A[i,i<span style="color: #666666">+</span><span style="color: #40a070">1</span>] <span style="color: #666666">=</span> <span style="color: #666666">-</span><span style="color: #40a070">1</span>
+
+A[Nx <span style="color: #666666">-</span> <span style="color: #40a070">3</span>, Nx <span style="color: #666666">-</span> <span style="color: #40a070">4</span>] <span style="color: #666666">=</span> <span style="color: #666666">-</span><span style="color: #40a070">1</span>
+A[Nx <span style="color: #666666">-</span> <span style="color: #40a070">3</span>, Nx <span style="color: #666666">-</span> <span style="color: #40a070">3</span>] <span style="color: #666666">=</span> <span style="color: #40a070">2</span>
+
+<span style="color: #60a0b0; font-style: italic"># Set up the vector f</span>
+f_vec <span style="color: #666666">=</span> dx<span style="color: #666666">**</span><span style="color: #40a070">2</span> <span style="color: #666666">*</span> f(x[<span style="color: #40a070">1</span>:<span style="color: #666666">-</span><span style="color: #40a070">1</span>])
+
+<span style="color: #60a0b0; font-style: italic"># Solve the equation</span>
+g_res <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linalg<span style="color: #666666">.</span>solve(A,f_vec)
+</pre></div>
+<p>
+<!-- !split -->
+
+<h2 id="___sec12" class="anchor">Results: Neural network versus finite differences </h2>
+
+<p>
+The analytical solution can be found analytically in this case:
+$$
+g(x) = x(1 - x)\exp(x)
+$$
+
+<p>
+Max absolute difference between the analytical solution and
+
+<ul>
+<li> solution from finite differences:  0.00266858</li>
+<li> solution from neural network (gradient descent) in TensorFlow: 0.000490608</li>
+<li> solution from neural network (adam) in TensorFlow: 7.11243e-05</li>
+</ul>
+
+<!-- !split -->
+
+<h2 id="___sec13" class="anchor">View the constructed graph in TensorBoard </h2>
+
+<p>
+We did:
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span><span style="color: #007020; font-weight: bold">with</span> tf<span style="color: #666666">.</span>Session() <span style="color: #007020; font-weight: bold">as</span> sess:
+    <span style="color: #666666">&lt;</span>train the network<span style="color: #666666">&gt;</span>
+
+    <span style="color: #60a0b0; font-style: italic"># Write the graph to TensorBoard</span>
+    writer <span style="color: #666666">=</span> tf<span style="color: #666666">.</span>summary<span style="color: #666666">.</span>FileWriter(<span style="color: #4070a0">&quot;./output&quot;</span>, sess<span style="color: #666666">.</span>graph)
+    writer<span style="color: #666666">.</span>close()
+</pre></div>
+<p>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+  <h3 class="panel-title">View the graph in TensorBoard</h3>
+  </div>
+<div class="panel-body">
+<p> <!-- subsequent paragraphs come in larger fonts, so start with a paragraph -->
+To view the constructed graph contained in the directory <em>folder</em>,
+type
+<p>
+
+<!-- code=text typeset with pygments style "friendly" -->
+<div class="highlight" style="background: #f0f0f0"><pre style="line-height: 125%"><span></span>tensorboard --logdir &quot;./output&quot;
+</pre></div>
+<p>
+in your commandline
+</div>
+</div>
+
+
+<p>
+<!-- !split -->
+
+<h2 id="___sec14" class="anchor">References </h2>
+
+<p>
+For using DNN to solve for differential equations:
+
+<ul>
+<li> <a href="https://arxiv.org/pdf/physics/9705023.pdf" target="_self">Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al</a></li>
+<li> <a href="http://cs229.stanford.edu/proj2013/ChiaramonteKiener-SolvingDifferentialEquationsUsingNeuralNetworks.pdf" target="_self">Solving differential equations using neural networks - M. M. Chiaramonte and M. Kiener</a></li>
+<li> <a href="https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c" target="_self">Neural networks for solving differential equations - becominghuman.ai</a></li>
+</ul>
+
+For using TensorFlow:
+
+<ul>
+<li> <a href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf" target="_self">Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron</a></li>
+</ul>
+
+For understanding the theory of partial differential equations:
+
+<ul>
+<li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a>
+<!-- doconce format html DNN_diffeq --pygments_html_style=autumn --keep_pygments_html_bg SLIDE_TYPE=reveal SLIDE_THEME=simple -->
+<!-- doconce slides_html DNN_diffeq reveal --html_slide_theme=simple --></li>
+</ul>
+
+
+<!-- ------------------- end of main content --------------- -->
+
+</div>  <!-- end container -->
+<!-- include javascript, jQuery *first* -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap footer
+<footer>
+<a href="http://..."><img width="250" align=right src="http://..."></a>
+</footer>
+-->
+
+
+<center style="font-size:80%">
+<!-- copyright -->  Made with <a href="https://github.com/hplgit/doconce">DocOnce</a>
+</center>
+
+
+</body>
+</html>
+    
+
