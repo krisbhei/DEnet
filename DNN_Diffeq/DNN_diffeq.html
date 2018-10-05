@@ -1,0 +1,659 @@
+\
+<!DOCTYPE html>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="Using Deep Neural Networks to solve differential equations">
+
+<title>Using Deep Neural Networks to solve differential equations</title>
+
+
+
+
+
+
+
+<!-- reveal.js: http://lab.hakim.se/reveal-js/ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="reveal.js/css/reveal.css">
+<link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+<!--
+<link rel="stylesheet" href="reveal.js/css/reveal.css">
+<link rel="stylesheet" href="reveal.js/css/theme/beige.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/beigesmall.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/serif.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/night.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/moon.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/sky.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/darkgray.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/cbc.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/simula.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/league.css" id="theme">
+-->
+
+<!-- For syntax highlighting -->
+<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<style type="text/css">
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    p.caption { width: 80%; font-size: 60%; font-style: italic; text-align: left; }
+    hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .reveal .alert-text-small   { font-size: 80%;  }
+    .reveal .alert-text-large   { font-size: 130%; }
+    .reveal .alert-text-normal  { font-size: 90%;  }
+    .reveal .alert {
+             padding:8px 35px 8px 14px; margin-bottom:18px;
+             text-shadow:0 1px 0 rgba(255,255,255,0.5);
+             border:5px solid #bababa;
+             -webkit-border-radius: 14px; -moz-border-radius: 14px;
+             border-radius:14px;
+             background-position: 10px 10px;
+             background-repeat: no-repeat;
+             background-size: 38px;
+             padding-left: 30px; /* 55px; if icon */
+     }
+     .reveal .alert-block {padding-top:14px; padding-bottom:14px}
+     .reveal .alert-block > p, .alert-block > ul {margin-bottom:1em}
+     /*.reveal .alert li {margin-top: 1em}*/
+     .reveal .alert-block p+p {margin-top:5px}
+     /*.reveal .alert-notice { background-image: url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_notice.png); }
+     .reveal .alert-summary  { background-image:url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_summary.png); }
+     .reveal .alert-warning { background-image: url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_warning.png); }
+     .reveal .alert-question {background-image:url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_question.png); } */
+
+</style>
+
+
+
+<!-- Styles for table layout of slides -->
+<style type="text/css">
+td.padding {
+  padding-top:20px;
+  padding-bottom:20px;
+  padding-right:50px;
+  padding-left:50px;
+}
+</style>
+
+</head>
+
+<body>
+<div class="reveal">
+
+<!-- Any section element inside the <div class="slides"> container
+     is displayed as a slide -->
+
+<div class="slides">
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "none"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+    
+
+
+
+<section>
+<!-- ------------------- main content ---------------------- -->
+
+<p>
+
+
+<center><h1 style="text-align: center;">Using Deep Neural Networks to solve differential equations</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Kristine B. Hein -->
+
+<center>
+<b>Kristine B. Hein</b> 
+</center>
+
+<p>&nbsp;<br>
+<!-- institution(s) -->
+
+<br>
+<p>&nbsp;<br>
+<center><h4>Oct 5, 2018</h4></center> <!-- date -->
+<br>
+</section>
+
+
+<section>
+<h2 id="___sec0">Short about differential equations </h2>
+
+<ul>
+<p><li> Find a function \( g \) based on what we know about its derivatives and boundary conditions</li>
+<p><li> Numerically, we find the output from the function evaluated at a set of values</li>
+</ul>
+</section>
+
+
+<section>
+<h2 id="___sec1">What the neural network must find </h2>
+
+<ul>
+<p><li> Propose a trial solution \( g_t \)</li>
+<p><li> The trial solution satisfies the boundary conditions</li>
+<p><li> Use the output from the neural network</li>
+</ul>
+</section>
+
+
+<section>
+<h2 id="___sec2">One dimensional Poisson equation </h2>
+
+<p>&nbsp;<br>
+$$
+\begin{align*}
+-g''(x) &= f(x), \qquad x \in (0,1) \\ \\ 
+\end{align*}
+$$
+<p>&nbsp;<br>
+
+for a given function \( f(x) \) along with some chosen boundary conditions.
+
+<p>
+In this case:
+
+<ul>
+<p><li> \( f(x) = (3x + x^2)\exp(x) \)</li>
+<p><li> Boundary conditions: \( g(0) = g(1) = 0 \)</li>
+</ul>
+</section>
+
+
+<section>
+<h2 id="___sec3">The trial solution </h2>
+A possible trial solution:
+<p>&nbsp;<br>
+$$
+g_t(x) = x \cdot (1-x) \cdot N(x,P)
+$$
+<p>&nbsp;<br>
+
+<p>
+with \( N(x,P) \) being the output from the network at \( x \) with
+weights and biases for every layer contained in \( P \)
+
+<p>
+<div class="alert alert-block alert-notice alert-text-normal">
+<b>What we want.</b>
+<p>
+We want to find \( g_t \) such that
+<p>&nbsp;<br>
+$$
+-g_t''(x) = f(x)
+$$
+<p>&nbsp;<br>
+
+holds as best as possible!
+</div>
+</section>
+
+
+<section>
+<h2 id="___sec4">Using TensorFlow to solve our Poisson equation </h2>
+
+<ul>
+<p><li> Construction phase</li>
+<p><li> Execution phase</li>
+</ul>
+</section>
+
+
+<section>
+<h2 id="___sec5">Construction phase - set everything up </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">import</span> <span style="color: #00aaaa; text-decoration: underline">tensorflow</span> <span style="color: #0000aa">as</span> <span style="color: #00aaaa; text-decoration: underline">tf</span>
+
+tf.set_random_seed(<span style="color: #009999">4155</span>)
+
+Nx = <span style="color: #009999">10</span>
+x = np.linspace(<span style="color: #009999">0</span>,<span style="color: #009999">1</span>, Nx)
+
+x_tf = tf.convert_to_tensor(x.reshape(-<span style="color: #009999">1</span>,<span style="color: #009999">1</span>),dtype=tf.float64)
+
+num_iter = <span style="color: #009999">10000</span>
+
+num_hidden_neurons = [<span style="color: #009999">20</span>,<span style="color: #009999">10</span>]
+num_hidden_layers = np.size(num_hidden_neurons)
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec6">Construction phase - construct the network </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;dnn&#39;</span>):
+
+    <span style="color: #aaaaaa; font-style: italic"># Input layer</span>
+    previous_layer = x_tf
+
+    <span style="color: #aaaaaa; font-style: italic"># Hidden layers</span>
+    <span style="color: #0000aa">for</span> l <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(num_hidden_layers):
+        current_layer = tf.layers.dense(previous_layer, \ 
+                                        num_hidden_neurons[l], \ 
+                                        name=<span style="color: #aa5500">&#39;hidden%d&#39;</span>%(l+<span style="color: #009999">1</span>), \ 
+                                        activation=tf.nn.sigmoid)
+        previous_layer = current_layer
+
+    <span style="color: #aaaaaa; font-style: italic"># Output layer</span>
+    dnn_output = tf.layers.dense(previous_layer, <span style="color: #009999">1</span>, name=<span style="color: #aa5500">&#39;output&#39;</span>)
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec7">Construction phase - define the cost function </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;cost&#39;</span>):
+    g_trial = x_tf*(<span style="color: #009999">1</span>-x_tf)*dnn_output
+    d_g_trial = tf.gradients(g_trial,x_tf)
+    d2_g_trial = tf.gradients(d_g_trial,x_tf)
+
+    <span style="color: #aaaaaa; font-style: italic"># f(x)</span>
+    right_side = (<span style="color: #009999">3</span>*x_tf + x_tf**<span style="color: #009999">2</span>)*tf.exp(x_tf)
+
+    err = tf.square( -d2_g_trial[<span style="color: #009999">0</span>] - right_side)
+    cost = tf.reduce_sum(err, name = <span style="color: #aa5500">&#39;cost&#39;</span>)
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec8">Construction phase - specify the optimization method </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>learning_rate = <span style="color: #009999">0.001</span>
+<span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;train&#39;</span>):
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+    traning_op = optimizer.minimize(cost)
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec9">Execution phase - train the network and evaluate the final model </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>g_dnn_tf = <span style="color: #00aaaa">None</span>
+
+init = tf.global_variables_initializer()
+
+<span style="color: #0000aa">with</span> tf.Session() <span style="color: #0000aa">as</span> sess:
+    init.run()
+
+    <span style="color: #0000aa">for</span> i <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(num_iter):
+        sess.run(traning_op)
+
+    g_dnn_tf = g_trial.eval()
+
+    <span style="color: #aaaaaa; font-style: italic"># Write the graph to TensorBoard</span>
+    writer = tf.summary.FileWriter(<span style="color: #aa5500">&quot;./output&quot;</span>, sess.graph)
+    writer.close()
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec10">Solving the equation using finite differences </h2>
+
+<p>
+An approximation of second derivatives:
+<p>&nbsp;<br>
+$$
+\begin{align*}
+g''(x_i) \approx \frac{g(x_i + \Delta x) - 2g(x_i) + g(x_i -\Delta x)}{\Delta x^2}
+\end{align*}
+$$
+<p>&nbsp;<br>
+
+for \( \small i = 1, \dots, N_x - 2 \) and \( \small g(x_0) = g(x_{N_x - 1}) = 0 \).
+
+<p>
+Inserting this into the Poission equation yields the following linear system:
+<p>&nbsp;<br>
+$$
+\small
+$$
+<p>&nbsp;<br>
+\begin{aligned}
+\begin{pmatrix}
+2 & -1 & 0 & \dots & 0 \\ 
+-1 & 2 & -1 & \dots & 0 \\ 
+\vdots & & \ddots & & \vdots \\ 
+0 & \dots & -1 & 2 & -1  \\ 
+0 & \dots & 0 & -1 & 2\\ 
+\end{pmatrix}
+\begin{pmatrix}
+g(x_1) \\ 
+g(x_2) \\ 
+\vdots \\ 
+g(x_{N_x - 3}) \\ 
+g(x_{N_x - 2})
+\end{pmatrix}
+&=
+\Delta x^2
+\begin{pmatrix}
+f(x_1) \\ 
+f(x_2) \\ 
+\vdots \\ 
+f(x_{N_x - 3}) \\ 
+f(x_{N_x - 2})
+\end{pmatrix} \\ 
+A\vec{g} &= \vec{f}
+\end{aligned}
+<p>&nbsp;<br>
+$$
+$$
+<p>&nbsp;<br>
+</section>
+
+
+<section>
+<h2 id="___sec11">Code </h2>
+
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>dx = <span style="color: #009999">1</span>/(Nx - <span style="color: #009999">1</span>)
+
+<span style="color: #aaaaaa; font-style: italic"># Set up the matrix A</span>
+A = np.zeros((Nx-<span style="color: #009999">2</span>,Nx-<span style="color: #009999">2</span>))
+
+A[<span style="color: #009999">0</span>,<span style="color: #009999">0</span>] = <span style="color: #009999">2</span>
+A[<span style="color: #009999">0</span>,<span style="color: #009999">1</span>] = -<span style="color: #009999">1</span>
+
+<span style="color: #0000aa">for</span> i <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(<span style="color: #009999">1</span>,Nx-<span style="color: #009999">3</span>):
+    A[i,i-<span style="color: #009999">1</span>] = -<span style="color: #009999">1</span>
+    A[i,i] = <span style="color: #009999">2</span>
+    A[i,i+<span style="color: #009999">1</span>] = -<span style="color: #009999">1</span>
+
+A[Nx - <span style="color: #009999">3</span>, Nx - <span style="color: #009999">4</span>] = -<span style="color: #009999">1</span>
+A[Nx - <span style="color: #009999">3</span>, Nx - <span style="color: #009999">3</span>] = <span style="color: #009999">2</span>
+
+<span style="color: #aaaaaa; font-style: italic"># Set up the vector f</span>
+f_vec = dx**<span style="color: #009999">2</span> * f(x[<span style="color: #009999">1</span>:-<span style="color: #009999">1</span>])
+
+<span style="color: #aaaaaa; font-style: italic"># Solve the equation</span>
+g_res = np.linalg.solve(A,f_vec)
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec12">Results: Neural network versus finite differences </h2>
+
+<p>
+The analytical solution can be found analytically in this case:
+<p>&nbsp;<br>
+$$
+g(x) = x(1 - x)\exp(x)
+$$
+<p>&nbsp;<br>
+
+<p>
+Max absolute difference between the analytical solution and
+
+<ul>
+<p><li> solution from finite differences:  0.00266858</li>
+<p><li> solution from neural network (gradient descent) in TensorFlow: 0.000490608</li>
+<p><li> solution from neural network (adam) in TensorFlow: 7.11243e-05</li>
+</ul>
+</section>
+
+
+<section>
+<h2 id="___sec13">View the constructed graph in TensorBoard </h2>
+
+<p>
+We did:
+<p>
+
+<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.Session() <span style="color: #0000aa">as</span> sess:
+    &lt;train the network&gt;
+
+    <span style="color: #aaaaaa; font-style: italic"># Write the graph to TensorBoard</span>
+    writer = tf.summary.FileWriter(<span style="color: #aa5500">&quot;./output&quot;</span>, sess.graph)
+    writer.close()
+</pre></div>
+<p>
+<div class="alert alert-block alert-notice alert-text-normal">
+<b>View the graph in TensorBoard.</b>
+<p>
+To view the constructed graph contained in the directory <em>folder</em>,
+type
+<p>
+
+<!-- code=text typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>tensorboard --logdir &quot;./output&quot;
+</pre></div>
+<p>
+in your commandline
+</div>
+</section>
+
+
+<section>
+<h2 id="___sec14">References </h2>
+
+<p>
+For using DNN to solve for differential equations:
+
+<ul>
+<p><li> <a href="https://arxiv.org/pdf/physics/9705023.pdf" target="_self">Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al</a></li>
+<p><li> <a href="http://cs229.stanford.edu/proj2013/ChiaramonteKiener-SolvingDifferentialEquationsUsingNeuralNetworks.pdf" target="_self">Solving differential equations using neural networks - M. M. Chiaramonte and M. Kiener</a></li>
+<p><li> <a href="https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c" target="_self">Neural networks for solving differential equations - becominghuman.ai</a></li>
+</ul>
+<p>
+
+For using TensorFlow:
+
+<ul>
+<p><li> <a href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf" target="_self">Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron</a></li>
+</ul>
+<p>
+
+For understanding the theory of partial differential equations:
+
+<ul>
+<p><li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a>
+<!-- doconce format html DNN_diffeq --pygments_html_style=autumn --keep_pygments_html_bg SLIDE_TYPE=reveal SLIDE_THEME=simple -->
+<!-- doconce slides_html DNN_diffeq reveal --html_slide_theme=simple -->
+<!-- doconce format html DNN_diffeq.do.txt --html_style=bootswatch_yeti --pygments_html_style=friendly --html_admon=bootstrap_panel --html_output= DNN_diffeq_html --html_code_style=inherit --html_body_style=font-size:16px --cite_doconce --></li>
+</ul>
+</section>
+
+
+
+</div> <!-- class="slides" -->
+</div> <!-- class="reveal" -->
+
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+    // Display navigation controls in the bottom right corner
+    controls: true,
+
+    // Display progress bar (below the horiz. slider)
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: true,
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    //center: true,
+    center: false,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // default/none/slide/concave/convex/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    //parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    //parallaxBackgroundSize: '' // CSS syntax, e.g. "2100px 900px"
+
+    theme: Reveal.getQueryHash().theme, // available themes are in reveal.js/css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+});
+
+Reveal.initialize({
+    dependencies: [
+        // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+        { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+
+        // Interpret Markdown in <section> elements
+        { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+        // Syntax highlight for <code> elements
+        { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+        // Zoom in and out with Alt+click
+        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Speaker notes
+        { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Remote control your reveal.js presentation using a touch device
+        //{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // MathJax
+        //{ src: 'reveal.js/plugin/math/math.js', async: true }
+    ]
+});
+
+Reveal.initialize({
+
+    // The "normal" size of the presentation, aspect ratio will be preserved
+    // when the presentation is scaled to fit different resolutions. Can be
+    // specified using percentage units.
+    width: 1170,  // original: 960,
+    height: 700,
+
+    // Factor of the display size that should remain empty around the content
+    margin: 0.1,
+
+    // Bounds for smallest/largest possible scale to apply to content
+    minScale: 0.2,
+    maxScale: 1.0
+
+});
+</script>
+
+<!-- begin footer logo
+<div style="position: absolute; bottom: 0px; left: 0; margin-left: 0px">
+<img src="somelogo.png">
+</div>
+     end footer logo -->
+
+
+
+</body>
+</html>
