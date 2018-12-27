@@ -1,3 +1,3 @@
 # DEnet
 
-An example on how differential equations (partial and ordinary) can be solved using neural networks constructed using Tensorflow. 
+An example on how differential equations (partial and ordinary) can be solved using neural networks from Tensorflow. 
