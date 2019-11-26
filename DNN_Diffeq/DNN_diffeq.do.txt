@@ -12,7 +12,7 @@ DATE: today
 !split
 ===== What the neural network must find =====
 
-* Propose a trial solution $g_t$
+* Propose a trial solution $g_{\mathrm{trial}}$
 * The trial solution satisfies the boundary conditions
 * Use the output from the neural network
 
@@ -35,16 +35,16 @@ In this case:
 ===== The trial solution =====
 A possible trial solution:
 !bt
-g_t(x) = x \cdot (1-x) \cdot N(x,P)
+g_{\mathrm{trial}}(x) = x \cdot (1-x) \cdot N(x,P)
 !et
 
 with $N(x,P)$ being the output from the network at $x$ with
 weights and biases for every layer contained in $P$
 
 !bnotice What we want
-We want to find $g_t$ such that
+We want to find $g_{\mathrm{trial}}$ such that
 !bt
--g_t''(x) = f(x)
+-g_{\mathrm{trial}}''(x) = f(x)
 !et
 holds as best as possible!
 !enotice
@@ -52,8 +52,18 @@ holds as best as possible!
 !split
 ===== Using TensorFlow to solve our Poisson equation =====
 
+* Version 1.x
 * Construction phase
 * Execution phase
+
+!split
+===== Run TensorFlow code 1.x in TensorFlow 2 =====
+
+Run old TensorFlow code:
+!bc
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+!ec
 
 !split
 ===== Construction phase - set everything up =====
@@ -101,14 +111,14 @@ with tf.name_scope('dnn'):
 
 !bc pypro
 with tf.name_scope('cost'):
-    g_trial = x_tf*(1-x_tf)*dnn_output
-    d_g_trial = tf.gradients(g_trial,x_tf)
-    d2_g_trial = tf.gradients(d_g_trial,x_tf)
+    g_t = x_tf*(1-x_tf)*dnn_output
+    d_g_t = tf.gradients(g_t,x_tf)
+    d2_g_t = tf.gradients(d_g_t,x_tf)
 
     # f(x)
     right_side = (3*x_tf + x_tf**2)*tf.exp(x_tf)
 
-    err = tf.square( -d2_g_trial[0] - right_side)
+    err = tf.square( -d2_g_t[0] - right_side)
     cost = tf.reduce_sum(err, name = 'cost')
 !ec
 
@@ -139,11 +149,8 @@ with tf.Session() as sess:
     for i in range(num_iter):
         sess.run(traning_op)
 
-    g_dnn_tf = g_trial.eval()
+    g_dnn_tf = g_t.eval()
 
-    # Write the graph to TensorBoard
-    writer = tf.summary.FileWriter("./output", sess.graph)
-    writer.close()
 !ec
 
 
@@ -233,46 +240,24 @@ Max absolute difference between the analytical solution and
 * solution from neural network (adam) in TensorFlow: 7.11243e-05
 
 !split
-===== View the constructed graph in TensorBoard =====
-
-We did:
-!bc pypro
-with tf.Session() as sess:
-    <train the network>
-
-    # Write the graph to TensorBoard
-    writer = tf.summary.FileWriter("./output", sess.graph)
-    writer.close()
-!ec
-
-
-!bnotice View the graph in TensorBoard
-To view the constructed graph contained in the directory *folder*,
-type
-!bc
-tensorboard --logdir "./output"
-!ec
-in your commandline
-!enotice
-
-!split
 ===== References =====
 
-For using DNN to solve for differential equations:
+Approaches that was followed in this material to solve differential equations using DNNs:
 * "Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al" : "https://arxiv.org/pdf/physics/9705023.pdf"
 * "Solving differential equations using neural networks - M. M. Chiaramonte and M. Kiener" : "http://cs229.stanford.edu/proj2013/ChiaramonteKiener-SolvingDifferentialEquationsUsingNeuralNetworks.pdf"
 * "Neural networks for solving differential equations - becominghuman.ai" : "https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c"
 
-For using TensorFlow:
+For using TensorFlow (version 1 of TensorFlow):
 * "Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron" : "https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf"
 
-For understanding the theory of partial differential equations:
+Theory of partial differential equations:
 * "Introduction to Partial Differential Equations - A. Tveito and R. Winther" : "https://www.springer.com/us/book/9783540225515"
 
-
-
+Just a small selection of other approaches:
+* "A machine learning framework for data driven acceleration of computations of differential equations - S. Mishra":"https://arxiv.org/pdf/1807.09519.pdf"
+* "Deep Learning Approximation for Stochastic Control Problems - J. Han and Weinan E":"https://arxiv.org/pdf/1611.07422.pdf" 
 
 # doconce format html DNN_diffeq --pygments_html_style=autumn --keep_pygments_html_bg SLIDE_TYPE=reveal SLIDE_THEME=simple
 # doconce slides_html DNN_diffeq reveal --html_slide_theme=simple
 
-# doconce format html DNN_diffeq.do.txt --html_style=bootswatch_yeti --pygments_html_style=friendly --html_admon=bootstrap_panel --html_output= DNN_diffeq_html --html_code_style=inherit --html_body_style=font-size:16px --cite_doconce
+# doconce format html DNN_diffeq.do.txt --html_style=bootswatch_yeti --pygments_html_style=friendly --html_admon=bootstrap_panel --html_output=DNN_diffeq_html --html_code_style=inherit --html_body_style=font-size:16px --cite_doconce

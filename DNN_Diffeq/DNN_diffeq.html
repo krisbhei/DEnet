@@ -1,8 +1,8 @@
-\
 <!DOCTYPE html>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="Using Deep Neural Networks to solve differential equations">
 
 <title>Using Deep Neural Networks to solve differential equations</title>
@@ -147,7 +147,7 @@ MathJax.Hub.Config({
 
 <br>
 <p>&nbsp;<br>
-<center><h4>Oct 5, 2018</h4></center> <!-- date -->
+<center><h4>Nov 21, 2019</h4></center> <!-- date -->
 <br>
 </section>
 
@@ -166,7 +166,7 @@ MathJax.Hub.Config({
 <h2 id="___sec1">What the neural network must find </h2>
 
 <ul>
-<p><li> Propose a trial solution \( g_t \)</li>
+<p><li> Propose a trial solution \( g_{\mathrm{trial}} \)</li>
 <p><li> The trial solution satisfies the boundary conditions</li>
 <p><li> Use the output from the neural network</li>
 </ul>
@@ -201,7 +201,7 @@ In this case:
 A possible trial solution:
 <p>&nbsp;<br>
 $$
-g_t(x) = x \cdot (1-x) \cdot N(x,P)
+g_{\mathrm{trial}}(x) = x \cdot (1-x) \cdot N(x,P)
 $$
 <p>&nbsp;<br>
 
@@ -213,10 +213,10 @@ weights and biases for every layer contained in \( P \)
 <div class="alert alert-block alert-notice alert-text-normal">
 <b>What we want.</b>
 <p>
-We want to find \( g_t \) such that
+We want to find \( g_{\mathrm{trial}} \) such that
 <p>&nbsp;<br>
 $$
--g_t''(x) = f(x)
+-g_{\mathrm{trial}}''(x) = f(x)
 $$
 <p>&nbsp;<br>
 
@@ -229,6 +229,7 @@ holds as best as possible!
 <h2 id="___sec4">Using TensorFlow to solve our Poisson equation </h2>
 
 <ul>
+<p><li> Version 1.x</li>
 <p><li> Construction phase</li>
 <p><li> Execution phase</li>
 </ul>
@@ -236,7 +237,21 @@ holds as best as possible!
 
 
 <section>
-<h2 id="___sec5">Construction phase - set everything up </h2>
+<h2 id="___sec5">Run TensorFlow code 1.x in TensorFlow 2 </h2>
+
+<p>
+Run old TensorFlow code:
+<p>
+
+<!-- code=text typeset with pygments style "autumn" -->
+<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+</pre></div>
+</section>
+
+
+<section>
+<h2 id="___sec6">Construction phase - set everything up </h2>
 
 <p>
 
@@ -259,7 +274,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 
 
 <section>
-<h2 id="___sec6">Construction phase - construct the network </h2>
+<h2 id="___sec7">Construction phase - construct the network </h2>
 
 <p>
 
@@ -284,27 +299,27 @@ num_hidden_layers = np.size(num_hidden_neurons)
 
 
 <section>
-<h2 id="___sec7">Construction phase - define the cost function </h2>
+<h2 id="___sec8">Construction phase - define the cost function </h2>
 
 <p>
 
 <!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
 <div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.name_scope(<span style="color: #aa5500">&#39;cost&#39;</span>):
-    g_trial = x_tf*(<span style="color: #009999">1</span>-x_tf)*dnn_output
-    d_g_trial = tf.gradients(g_trial,x_tf)
-    d2_g_trial = tf.gradients(d_g_trial,x_tf)
+    g_t = x_tf*(<span style="color: #009999">1</span>-x_tf)*dnn_output
+    d_g_t = tf.gradients(g_t,x_tf)
+    d2_g_t = tf.gradients(d_g_t,x_tf)
 
     <span style="color: #aaaaaa; font-style: italic"># f(x)</span>
     right_side = (<span style="color: #009999">3</span>*x_tf + x_tf**<span style="color: #009999">2</span>)*tf.exp(x_tf)
 
-    err = tf.square( -d2_g_trial[<span style="color: #009999">0</span>] - right_side)
+    err = tf.square( -d2_g_t[<span style="color: #009999">0</span>] - right_side)
     cost = tf.reduce_sum(err, name = <span style="color: #aa5500">&#39;cost&#39;</span>)
 </pre></div>
 </section>
 
 
 <section>
-<h2 id="___sec8">Construction phase - specify the optimization method </h2>
+<h2 id="___sec9">Construction phase - specify the optimization method </h2>
 
 <p>
 
@@ -318,7 +333,7 @@ num_hidden_layers = np.size(num_hidden_neurons)
 
 
 <section>
-<h2 id="___sec9">Execution phase - train the network and evaluate the final model </h2>
+<h2 id="___sec10">Execution phase - train the network and evaluate the final model </h2>
 
 <p>
 
@@ -333,17 +348,13 @@ init = tf.global_variables_initializer()
     <span style="color: #0000aa">for</span> i <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(num_iter):
         sess.run(traning_op)
 
-    g_dnn_tf = g_trial.eval()
-
-    <span style="color: #aaaaaa; font-style: italic"># Write the graph to TensorBoard</span>
-    writer = tf.summary.FileWriter(<span style="color: #aa5500">&quot;./output&quot;</span>, sess.graph)
-    writer.close()
+    g_dnn_tf = g_t.eval()
 </pre></div>
 </section>
 
 
 <section>
-<h2 id="___sec10">Solving the equation using finite differences </h2>
+<h2 id="___sec11">Solving the equation using finite differences </h2>
 
 <p>
 An approximation of second derivatives:
@@ -398,7 +409,7 @@ $$
 
 
 <section>
-<h2 id="___sec11">Code </h2>
+<h2 id="___sec12">Code </h2>
 
 <p>
 
@@ -429,7 +440,7 @@ g_res = np.linalg.solve(A,f_vec)
 
 
 <section>
-<h2 id="___sec12">Results: Neural network versus finite differences </h2>
+<h2 id="___sec13">Results: Neural network versus finite differences </h2>
 
 <p>
 The analytical solution can be found analytically in this case:
@@ -451,42 +462,10 @@ Max absolute difference between the analytical solution and
 
 
 <section>
-<h2 id="___sec13">View the constructed graph in TensorBoard </h2>
-
-<p>
-We did:
-<p>
-
-<!-- code=python (!bc pypro) typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #0000aa">with</span> tf.Session() <span style="color: #0000aa">as</span> sess:
-    &lt;train the network&gt;
-
-    <span style="color: #aaaaaa; font-style: italic"># Write the graph to TensorBoard</span>
-    writer = tf.summary.FileWriter(<span style="color: #aa5500">&quot;./output&quot;</span>, sess.graph)
-    writer.close()
-</pre></div>
-<p>
-<div class="alert alert-block alert-notice alert-text-normal">
-<b>View the graph in TensorBoard.</b>
-<p>
-To view the constructed graph contained in the directory <em>folder</em>,
-type
-<p>
-
-<!-- code=text typeset with pygments style "autumn" -->
-<div class="highlight" style="background: #ffffff"><pre style="font-size: 80%; line-height: 125%"><span></span>tensorboard --logdir &quot;./output&quot;
-</pre></div>
-<p>
-in your commandline
-</div>
-</section>
-
-
-<section>
 <h2 id="___sec14">References </h2>
 
 <p>
-For using DNN to solve for differential equations:
+Approaches that was followed in this material to solve differential equations using DNNs:
 
 <ul>
 <p><li> <a href="https://arxiv.org/pdf/physics/9705023.pdf" target="_self">Artificial Neural Networks for Solving Ordinary and Partial Differential Equations - I. E. Lagaris et al</a></li>
@@ -495,20 +474,28 @@ For using DNN to solve for differential equations:
 </ul>
 <p>
 
-For using TensorFlow:
+For using TensorFlow (version 1 of TensorFlow):
 
 <ul>
 <p><li> <a href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Textbooks/TensorflowML.pdf" target="_self">Hands-On Machine Learning with Scikit-Learn and TensorFlow - A. Geron</a></li>
 </ul>
 <p>
 
-For understanding the theory of partial differential equations:
+Theory of partial differential equations:
 
 <ul>
-<p><li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a>
+<p><li> <a href="https://www.springer.com/us/book/9783540225515" target="_self">Introduction to Partial Differential Equations - A. Tveito and R. Winther</a></li>
+</ul>
+<p>
+
+Just a small selection of other approaches:
+
+<ul>
+<p><li> <a href="https://arxiv.org/pdf/1807.09519.pdf" target="_self">A machine learning framework for data driven acceleration of computations of differential equations - S. Mishra</a></li>
+<p><li> <a href="https://arxiv.org/pdf/1611.07422.pdf" target="_self">Deep Learning Approximation for Stochastic Control Problems - J. Han and Weinan E</a> 
 <!-- doconce format html DNN_diffeq --pygments_html_style=autumn --keep_pygments_html_bg SLIDE_TYPE=reveal SLIDE_THEME=simple -->
 <!-- doconce slides_html DNN_diffeq reveal --html_slide_theme=simple -->
-<!-- doconce format html DNN_diffeq.do.txt --html_style=bootswatch_yeti --pygments_html_style=friendly --html_admon=bootstrap_panel --html_output= DNN_diffeq_html --html_code_style=inherit --html_body_style=font-size:16px --cite_doconce --></li>
+<!-- doconce format html DNN_diffeq.do.txt --html_style=bootswatch_yeti --pygments_html_style=friendly --html_admon=bootstrap_panel --html_output=DNN_diffeq_html --html_code_style=inherit --html_body_style=font-size:16px --cite_doconce --></li>
 </ul>
 </section>
 
